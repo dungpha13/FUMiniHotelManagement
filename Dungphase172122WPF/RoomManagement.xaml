@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="Dungphase172122WPF.RoomManagement"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dungphase172122WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Search Bar -->
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Label>Search by Room Number...</Label>
+            <TextBox x:Name="txtSearch" Width="200"/>
+            <Button Content="Search" Click="btnSearch_Click" Margin="5,0,0,0"/>
+        </StackPanel>
+
+        <!-- Data Grid for Room List -->
+        <DataGrid x:Name="dgRooms" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1" Margin="10" SelectionMode="Single" SelectionChanged="dgRooms_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Room ID" Binding="{Binding RoomId}" Width="SizeToHeader"/>
+                <DataGridTextColumn Header="Room Number" Binding="{Binding RoomNumber}" Width="SizeToHeader"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding RoomDetailDescription}" Width="SizeToHeader"/>
+                <DataGridTextColumn Header="Max Capacity" Binding="{Binding RoomMaxCapacity}" Width="SizeToHeader"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding RoomStatus}" Width="SizeToHeader"/>
+                <DataGridTextColumn Header="Price Per Day" Binding="{Binding RoomPricePerDay, StringFormat=C}" Width="SizeToHeader"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding RoomType}" Width="SizeToHeader"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- CRUD Buttons -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10" Grid.Row="2">
+            <Button Content="Add" Click="btnAdd_Click" Margin="5"/>
+            <Button Content="Edit" Click="btnEdit_Click" Margin="5"/>
+            <Button Content="Delete" Click="btnDelete_Click" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

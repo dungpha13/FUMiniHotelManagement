@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Dungphase172122WPF.ProfileManagement"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="600">
+    <StackPanel Margin="10">
+        <TextBlock Text="Manage Profile" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+
+        <Label Content="Full Name:"/>
+        <TextBox x:Name="txtFullName" Margin="0,0,0,10"/>
+
+        <Label Content="Telephone Number:"/>
+        <TextBox x:Name="txtTelephone" Margin="0,0,0,10"/>
+
+        <Label Content="Email Address:"/>
+        <TextBox x:Name="txtEmail" Margin="0,0,0,10"/>
+
+        <Label Content="Password:"/>
+        <StackPanel Width="580">
+            <TextBox x:Name="txtPassword" Visibility="Collapsed"/>
+            <PasswordBox x:Name="pwdPassword" Margin="0,0,0,10" Width="580" HorizontalAlignment="Left"/>
+            <CheckBox Content="Show Password" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked"/>
+        </StackPanel>
+
+        <Label Content="Birthday:"/>
+        <DatePicker x:Name="dpBirthday" Margin="0,0,0,10"/>
+        <Button Content="Update Profile" Width="120" Click="btnUpdate_Click"/>
+    </StackPanel>
+</UserControl>
