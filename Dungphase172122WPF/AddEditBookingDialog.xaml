@@ -5,8 +5,77 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dungphase172122WPF"
         mc:Ignorable="d"
-        Title="AddEditBookingDialog" Height="450" Width="800">
-    <Grid>
-        
+        Title="AddEditBookingDialog" Height="480" Width="500">
+    <Grid Margin="0,0,0,-6" Height="480">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Available Rooms:" Grid.Row="1" Grid.Column="1" Margin="10,0,10,0"/>
+        <DataGrid x:Name="dgAvailableRooms" Grid.Row="1" Grid.Column="1" Margin="10,20,10,0" 
+                  ItemsSource="{Binding AvailableRooms}" AutoGenerateColumns="False" SelectionChanged="dgAvailableRooms_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Room ID" Binding="{Binding RoomId}" Width="SizeToHeader" />
+                <DataGridTextColumn Header="Room Number" Binding="{Binding RoomNumber}" Width="SizeToHeader" />
+                <DataGridTextColumn Header="Description" Binding="{Binding RoomDetailDescription}" Width="SizeToHeader" />
+                <DataGridTextColumn Header="Type" Binding="{Binding RoomType}" Width="SizeToHeader" />
+                <DataGridTextColumn Header="Max Capacity" Binding="{Binding RoomMaxCapacity}" Width="SizeToHeader" />
+                <DataGridTextColumn Header="Status" Binding="{Binding RoomStatus}" Width="SizeToHeader" />
+                <DataGridTextColumn Header="Price Per Day" Binding="{Binding RoomPricePerDay, StringFormat=C}" Width="SizeToHeader" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Column="1" HorizontalAlignment="Center" Margin="0,5,0,0" Grid.Row="2" VerticalAlignment="Top" Width="480" Height="256">
+            <Grid HorizontalAlignment="Right" Height="190" Margin="0,0,253,0" VerticalAlignment="Top" Width="206">
+
+                <TextBlock Margin="0,2,161,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="16" Width="44"><Run Language="vi-vn" Text="RoomId:"/></TextBlock>
+                <TextBox x:Name="txtRoomId" Margin="0,0,0,172" HorizontalAlignment="Right" Width="156"/>
+
+                <Border BorderBrush="#ACB0AF" BorderThickness="1" Margin="0,38,0,87" CornerRadius="5" Cursor="IBeam" HorizontalAlignment="Center" Width="206">
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="5" FontSize="12" Foreground="#000000" Text="StartDate"/>
+                        <DatePicker Grid.Row="1" x:Name="dpStartDate" Grid.Column="1" SelectedDateChanged="dpDate_SelectionChanged"/>
+                    </Grid>
+                </Border>
+
+                <TextBlock Margin="1,127,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="72"><Run Language="vi-vn" Text="Price Per Day:"/></TextBlock>
+                <TextBox x:Name="txtPrice" Margin="78,127,0,47" HorizontalAlignment="Left" Width="128"/>
+
+                <TextBlock Margin="0,163,120,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="86" Height="16"><Run Language="vi-vn" Text="Your Total Price:"/></TextBlock>
+                <TextBox x:Name="txtTotalPrice" Margin="0,163,0,11" HorizontalAlignment="Right" Width="115"/>
+            </Grid>
+            <Grid HorizontalAlignment="Left" Margin="244,2,0,66" Width="215">
+
+                <TextBlock Margin="0,0,133,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="82" Height="16"><Run Language="vi-vn" Text="Room Number:"/></TextBlock>
+                <TextBox x:Name="txtRoomNumber" Margin="0,0,0,172" HorizontalAlignment="Right" Width="128"/>
+
+                <Border BorderBrush="#ACB0AF" BorderThickness="1" Margin="0,36,0,87" CornerRadius="5" Cursor="IBeam" Width="215" HorizontalAlignment="Center" Height="65">
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="5" FontSize="12" Foreground="#000000" Text="EndDate"/>
+                        <DatePicker Grid.Row="1" x:Name="dpEndDate" Grid.Column="1" SelectedDateChanged="dpDate_SelectionChanged"/>
+                    </Grid>
+                </Border>
+
+                <TextBlock Margin="0,125,143,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="16" Width="72"><Run Language="vi-vn" Text="MaxCapacity:"/></TextBlock>
+                <TextBox x:Name="txtNumPerson" Margin="0,125,0,47" HorizontalAlignment="Right" Width="138"/>
+
+                <Button Content="Add to Booking" Margin="0,157,114,0" Click="btnAdd_Click"/>
+                <Button Content="Cancel" Margin="133,157,0,0" Width="82" Click="btnCancel_Click"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
