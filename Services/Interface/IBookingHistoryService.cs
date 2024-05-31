@@ -1,5 +1,6 @@
 ﻿using BusinessObjects;
 using DataAccessObjects.DTO;
+using DataAccessObjects.DTO.Request;
 
 namespace Services.Interface
 {
@@ -7,5 +8,6 @@ namespace Services.Interface
     {
         Task<BookingReservation?> GetBookingById(int id);
         Task<List<BookingHistoryDTO>> GetBookingByCusId(int id);
+        BookingReservation CreateBooking(BookingDTO booking);
     }
 }

@@ -25,24 +25,43 @@ namespace Dungphase172122WPF
     /// </summary>
     public partial class AddEditBookingDialog : Window
     {
-        private readonly IRoomService _service;
+        private readonly IBookingHistoryService _bookingService;
+        private readonly IRoomService _roomService;
         public BookingDTO Booking { get; private set; }
         public Customer Customer { get; set; }
         private RoomDTO room { get; set; }
+        private List<BookingDetailsDTO> bookingDetailsDTOs { get; set; }
 
         public AddEditBookingDialog()
         {
             InitializeComponent();
-            _service = ((App)Application.Current).ServiceProvider.GetRequiredService<IRoomService>() ?? throw new ArgumentNullException(nameof(RoomService));
-
-            Booking = new BookingDTO();
-            Loaded += LoadRoom;
+            _bookingService = ((App)Application.Current).ServiceProvider.GetRequiredService<IBookingHistoryService>() ?? throw new ArgumentNullException(nameof(BookingHistoryService));
+            _roomService = ((App)Application.Current).ServiceProvider.GetRequiredService<IRoomService>() ?? throw new ArgumentNullException(nameof(RoomService));
+            if (Booking is null)
+            {
+                Booking = new BookingDTO();
+                bookingDetailsDTOs = new List<BookingDetailsDTO>();
+            }
+            else
+            {
+                bookingDetailsDTOs = Booking.BookingDetails;
+            }
+            Loaded += LoadRooms;
+            Loaded += LoadBookingDetails;
         }
 
-        private void LoadRoom(object sender, RoutedEventArgs e)
+        private void LoadRooms(object sender, RoutedEventArgs e)
         {
-            var data = _service.GetRooms(r => r.RoomStatus != 1);
+            var data = _roomService.GetRooms(r => r.RoomStatus == 1);
             dgAvailableRooms.ItemsSource = data;
+        }
+
+        private void LoadBookingDetails(object sender, RoutedEventArgs e)
+        {
+            dgBookingDetails.ItemsSource = null;
+            dgBookingDetails.ItemsSource = bookingDetailsDTOs;
+
+            txtTotalPrice.Text = CalculateTotalPrice().ToString();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -53,8 +72,38 @@ namespace Dungphase172122WPF
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            Close();
+            if (dgAvailableRooms.SelectedItems.Count > 0)
+            {
+                room = (RoomDTO)dgAvailableRooms.SelectedItem;
+
+                DateTime startDate = dpStartDate.SelectedDate.Value;
+                DateTime endDate = dpEndDate.SelectedDate.Value;
+                int daysDifference = (endDate - startDate).Days;
+                var TotalPrice = (daysDifference * room.RoomPricePerDay);
+
+                var bookingDetail = new BookingDetailsDTO()
+                {
+                    Room = room,
+                    StartDate = dpStartDate.SelectedDate.Value,
+                    EndDate = dpEndDate.SelectedDate.Value,
+                    ActualPrice = TotalPrice,
+                };
+
+                bookingDetailsDTOs.Add(bookingDetail);
+                LoadBookingDetails(sender, e);
+            }
+        }
+
+        private decimal? CalculateTotalPrice()
+        {
+            decimal? total = 0;
+
+            foreach (var item in bookingDetailsDTOs)
+            {
+                total += item.ActualPrice;
+            }
+
+            return total;
         }
 
         private void dgAvailableRooms_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -85,6 +134,44 @@ namespace Dungphase172122WPF
                     txtTotalPrice.Text = "0";
                 }
             }
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgBookingDetails.SelectedItems.Count > 0)
+            {
+                var bookingdetail = (BookingDetailsDTO)dgBookingDetails.SelectedItem;
+                bookingDetailsDTOs.Remove(bookingdetail);
+                LoadBookingDetails(sender, e);
+            }
+        }
+
+        private void dgBookingDetails_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgBookingDetails.SelectedItems.Count > 0)
+            {
+                var bookingdetail = (BookingDetailsDTO)dgBookingDetails.SelectedItem;
+                txtRoomIdDB.Text = bookingdetail.Room.RoomId.ToString();
+                txtRoomNumDB.Text = bookingdetail.Room.RoomNumber;
+                dpStartDateDB.SelectedDate = bookingdetail.StartDate;
+                dpEndDateDB.SelectedDate = bookingdetail.EndDate;
+                txtActualPrice.Text = bookingdetail.ActualPrice.ToString();
+            }
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            Booking.BookingDate = DateTime.Today;
+            Booking.TotalPrice = System.Convert.ToDecimal(txtTotalPrice.Text);
+            Booking.CustomerId = Customer.CustomerId;
+            Booking.BookingStatus = 1;
+            Booking.BookingDetails = bookingDetailsDTOs;
+            Booking.CalculateTotalPrice();
+
+            _bookingService.CreateBooking(Booking);
+
+            DialogResult = true;
+            Close();
         }
     }
 }

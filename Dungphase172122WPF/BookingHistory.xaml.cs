@@ -32,18 +32,21 @@ namespace Dungphase172122WPF
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             AddEditBookingDialog addEditBookingDialog = new AddEditBookingDialog();
+            addEditBookingDialog.Customer = Customer;
             if (addEditBookingDialog.ShowDialog() == true)
             {
-
+                LoadData(sender, e);
             }
         }
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             AddEditBookingDialog addEditBookingDialog = new AddEditBookingDialog();
+            addEditBookingDialog.Customer = Customer;
+            //addEditBookingDialog.Booking = 
             if (addEditBookingDialog.ShowDialog() == true)
             {
-
+                LoadData(sender, e);
             }
         }
 

@@ -20,9 +20,10 @@ namespace Dungphase172122WPF
         {
             InitializeComponent();
             _service = ((App)Application.Current).ServiceProvider.GetRequiredService<ICustomerService>() ?? throw new ArgumentNullException(nameof(CustomerService));
+            Loaded += LoadData;
         }
 
-        private void LoadData()
+        private void LoadData(object sender, RoutedEventArgs e)
         {
             dgCustomers.ItemsSource = null;
             var customers = _service.GetCustomers(c => c.CustomerFullName.ToUpper().Contains(txtSearch.Text.ToUpper()));
@@ -46,7 +47,7 @@ namespace Dungphase172122WPF
             }
             else
             {
-                LoadData();
+                LoadData(sender, e);
             }
         }
 
@@ -57,7 +58,7 @@ namespace Dungphase172122WPF
             {
                 var newCustomer = addEditCustomerDialog.Customer;
                 await _service.AddCustomer(newCustomer);
-                LoadData();
+                LoadData(sender, e);
             }
         }
 
@@ -70,7 +71,7 @@ namespace Dungphase172122WPF
                 {
                     var updatedCustomer = addEditCustomerDialog.Customer;
                     await _service.UpdateCustomer(updatedCustomer);
-                    LoadData();
+                    LoadData(sender, e);
                 }
             }
             else
@@ -86,7 +87,7 @@ namespace Dungphase172122WPF
                 if (MessageBox.Show($"Are you sure you want to delete Customer {selectedCustomer.CustomerFullName}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     await _service.DeleteCustomer(selectedCustomer.CustomerId);
-                    LoadData();
+                    LoadData(sender, e);
                 }
             }
             else

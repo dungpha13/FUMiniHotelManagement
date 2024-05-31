@@ -28,13 +28,14 @@ namespace Dungphase172122WPF
         public RoomManagement()
         {
             InitializeComponent();
-            _service = ((App)Application.Current).ServiceProvider.GetRequiredService<IRoomService>() ?? throw new ArgumentNullException(nameof(CustomerService));
+            _service = ((App)Application.Current).ServiceProvider.GetRequiredService<IRoomService>() ?? throw new ArgumentNullException(nameof(RoomService));
+            Loaded += LoadData;
         }
 
-        private void LoadData()
+        private void LoadData(object sender, RoutedEventArgs e)
         {
             dgRooms.ItemsSource = null;
-            var rooms = _service.GetRooms(r => r.RoomNumber.Contains(txtSearch.Text));
+            var rooms = _service.GetRooms(r => true);
             dgRooms.ItemsSource = rooms;
         }
 
@@ -72,7 +73,7 @@ namespace Dungphase172122WPF
             {
                 var newRoom = addEditRoomDialog.Room;
                 await _service.AddRoom(newRoom);
-                LoadData();
+                LoadData(sender, e);
             }
         }
 
@@ -85,7 +86,7 @@ namespace Dungphase172122WPF
                 {
                     var updatedRoom = addEditRoomDialog.Room;
                     await _service.UpdateRoom(updatedRoom);
-                    LoadData();
+                    LoadData(sender, e);
                 }
             }
             else
@@ -101,7 +102,7 @@ namespace Dungphase172122WPF
                 if (MessageBox.Show($"Are you sure you want to delete Room {selectedRoom.RoomNumber}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     await _service.DeleteRoom(selectedRoom.RoomId);
-                    LoadData();
+                    LoadData(sender, e);
                 }
             }
             else

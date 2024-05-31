@@ -9,18 +9,17 @@ namespace DataAccessObjects.DTO.Request
 {
     public class BookingDTO
     {
-        public int BookingReservationId { get; set; }
         public DateTime? BookingDate { get; set; }
-        public decimal? TotalPrice => CalculateTotalPrice();
+        public decimal? TotalPrice {  get; set; }
         public int CustomerId { get; set; }
         public byte? BookingStatus { get; set; }
         public List<BookingDetailsDTO> BookingDetails { get; set; } = new List<BookingDetailsDTO>();
 
-        private decimal? CalculateTotalPrice()
+        public void CalculateTotalPrice()
         {
             if (BookingDetails == null || BookingDetails.Count == 0)
             {
-                return 0;
+                TotalPrice = 0;
             }
 
             decimal? totalPrice = 0;
@@ -31,7 +30,7 @@ namespace DataAccessObjects.DTO.Request
                 totalPrice += detail.ActualPrice;
             }
 
-            return totalPrice;
+            TotalPrice = totalPrice;
         }
     }
 }

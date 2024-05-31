@@ -42,38 +42,62 @@ namespace DataAccessObjects
                 .ToListAsync();
         }
 
-        public BookingReservation CreateBooking(BookingDTO bookingDto)
+        public static BookingReservation CreateBooking(BookingDTO bookingDto)
         {
             using var db = new FuminiHotelManagementContext();
 
             var bookingReservation = new BookingReservation
             {
-                BookingReservationId = bookingDto.BookingReservationId,
+                BookingReservationId = db.BookingReservations.Count(),
                 BookingDate = DateOnly.FromDateTime((DateTime)bookingDto.BookingDate),
                 CustomerId = bookingDto.CustomerId,
                 BookingStatus = bookingDto.BookingStatus,
-                BookingDetails = new List<BookingDetail>()
+                BookingDetails = new List<BookingDetail>(),
+                TotalPrice = bookingDto.TotalPrice,
             };
+
+            var booking = db.BookingReservations.Add(bookingReservation);
+
+            db.SaveChanges();
 
             foreach (var detailDto in bookingDto.BookingDetails)
             {
+                var room = db.RoomInformations.Find(detailDto.Room.RoomId);
+
+                room.RoomStatus = 0;
+                db.SaveChanges();
+
                 var detail = new BookingDetail
                 {
-                    BookingReservationId = bookingDto.BookingReservationId,
+                    BookingReservationId = booking.Entity.BookingReservationId,
                     RoomId = detailDto.Room.RoomId,
                     StartDate = DateOnly.FromDateTime(detailDto.StartDate),
                     EndDate = DateOnly.FromDateTime(detailDto.EndDate),
                     ActualPrice = detailDto.ActualPrice,
-                    Room = db.RoomInformations.Find(detailDto.Room.RoomId),
+                    Room = room,
                 };
 
-                db.BookingDetails.Add(detail);
-                bookingReservation.BookingDetails.Add(detail);
+                //db.BookingDetails.Add(detail);
+                booking.Entity.BookingDetails.Add(detail);
             }
 
-            db.BookingReservations.Add(bookingReservation);
+            db.BookingReservations.Update(booking.Entity);
+
+            db.SaveChanges();
 
             return bookingReservation;
+        }
+
+        public static BookingDTO? GetBookingDTOById(int id)
+        {
+            using var db = new FuminiHotelManagementContext();
+            return db.BookingReservations
+                .Where(b => b.BookingReservationId == id)
+                .Include(b => b.BookingDetails)
+                    .ThenInclude(bd => bd.Room)
+                .Select(b => new BookingDTO
+                {
+                }).FirstOrDefault();
         }
     }
 }

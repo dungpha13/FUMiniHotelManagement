@@ -1,5 +1,6 @@
 ﻿using BusinessObjects;
 using DataAccessObjects.DTO;
+using DataAccessObjects.DTO.Request;
 using Repositories;
 using Repositories.Interface;
 using Services.Interface;
@@ -18,5 +19,7 @@ namespace Services
         public async Task<BookingReservation?> GetBookingById(int id) => await _repo.GetBookingById(id);
 
         public async Task<List<BookingHistoryDTO>> GetBookingByCusId(int id) => await _repo.GetBookingByCusId(id);
+
+        public BookingReservation CreateBooking(BookingDTO booking) => _repo.CreateBooking(booking);
     }
 }
